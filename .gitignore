@@ -1,0 +1,10 @@
+jupyter
+data/*
+!data/frontend/git.keep
+!data/preprocessing/git.keep
+!data/training/git.keep
+!data/training/scoring_model_latest.pkl
+feature_store/data
+!feature_store/data/git.keep
+.venv
+.idea

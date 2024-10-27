@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/data
+    environment:
+      - RUNNING_IN_DOCKER=True
+
+  ranking-service:
+    build:
+      context: .
+      dockerfile: ranking_service/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data
+      - ./scoring_model:/scoring_model
+      - ./feature_store:/feature_store

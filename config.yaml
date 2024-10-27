@@ -1,0 +1,11 @@
+hf_model_name: thenlper/gte-base
+model_cache_folder: data/training
+
+preprocessing:
+    topics: ["cs.AI"] #, "cs.CL", "stat.ML", "cs.LG"]
+    history_days: 10
+
+ranking_service:
+    model_path: data/training/thenlper_gte-base
+    scoring_model_path: data/training/scoring_model_latest.pkl
+    data_path: data/preprocessing
