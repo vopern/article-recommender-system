@@ -1,6 +1,6 @@
 """
 Train a model for ranking recommendations based on user interactions and document features.
-Options would be an NN-based multitask model, or pair-wise/list-wise ranking models
+Better options would be an NN-based multitask model, or pair-wise/list-wise ranking models
 or even prompt-based prediction to an LLM API.
 
 Here this is just a dummy-model for testing the system.
@@ -68,7 +68,7 @@ def trainings_data(num_days):
 
 def train_model(X, y):
     """
-    Train a dummy model to score documents based on user-document interaction features.
+    Train a simple model to score documents based on user-document interaction features.
     """
     logistic_model = LogisticRegression()
     logistic_model.fit(X, y)

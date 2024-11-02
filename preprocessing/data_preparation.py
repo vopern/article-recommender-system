@@ -15,6 +15,9 @@ LOG_DIR = os.path.join(utils.base_folder(), "data", "frontend")
 
 
 def fetch(client, topic, day):
+    """
+    Fetch article metadata from the arxiv
+    """
     qdate = day.strftime("%Y%m%d")
     date = day.strftime("%Y-%m-%d")
 
@@ -67,32 +70,32 @@ def parse_logs(day):
     return
 
 
-def prep_raw_data(download_all, config, date_str: str):
+def prepare_raw_data(download_all, config, date_str: str):
     """
     Process user interaction logs and download document metadata from the arxiv.
     """
-    print('Preparing raw data')
-    today = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+    print('Preparing processed logs and arxiv metadata')
+    date = utils.str_to_date(date_str)
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     topics = config['preprocessing']['topics']
-
-    for i in range(10):
-        day = (today - datetime.timedelta(days=i)).strftime('%Y-%m-%d')
-        log_data = parse_logs(day)
+    num_days = config['preprocessing']['history_days']
+    for i in range(num_days):
+        day_str = utils.date_to_str(date - datetime.timedelta(days=i))
+        log_data = parse_logs(day_str)
         if log_data is not None:
-            output_file = os.path.join(OUTPUT_DIR, f"{day}_logs.parquet")
+            output_file = os.path.join(OUTPUT_DIR, f"{day_str}_logs.parquet")
             log_data.to_parquet(output_file)
 
     client = arxiv.Client()
-    for i in range(10):
-        day = today - datetime.timedelta(days=i)
-        output_file = os.path.join(OUTPUT_DIR, f"{day.strftime('%Y-%m-%d')}_arxiv.parquet")
+    for i in range(num_days):
+        day = date - datetime.timedelta(days=i)
+        output_file = os.path.join(OUTPUT_DIR, f"{utils.date_to_str(day)}_arxiv.parquet")
         if os.path.exists(output_file) and not download_all:
             print(f'Data for {day} already downloaded')
             continue
         dfs = []
         for topic in topics:
-            print(f"Fetching preprocessing for topic: {topic} on day {day}")
+            print(f"Fetching documents for topic: {topic} on day {day}")
             df = fetch(client, topic, day)
             dfs.append(df)
         dfs = pd.concat(dfs)
@@ -103,6 +106,9 @@ def prep_raw_data(download_all, config, date_str: str):
 
 
 def load_files(num_days, fid, date_str, include_date=True):
+    """
+    Load data from the last few days from preprocessed files
+    """
     data = []
     files = os.listdir(OUTPUT_DIR)
     files.sort()
@@ -127,7 +133,6 @@ def prepare_features(config, date_str):
     """
     Prepare today's user and document features based on recent history.
     """
-    today = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
     history_days = config['preprocessing']['history_days']
     print('Preparing features')
     logs = load_files(history_days, 'logs', date_str, include_date=False)
@@ -178,7 +183,7 @@ def main(date, download_all=False):
     Consider logs up until yesterday and documents including today
     """
     config = utils.load_config()
-    prep_raw_data(download_all, config, date)
+    prepare_raw_data(download_all, config, date)
     prepare_features(config, date)
 
 

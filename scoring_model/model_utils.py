@@ -39,11 +39,10 @@ class RecommendationModel:
 
     def rerank_list(self, query, ids, titles):
         """
-        Rerank the ids by embedding similarity between query and title.
-        Here a personalized ranking could be implemented.
-        For example one might use the recommender model to score the passed ids.
-        Features of new documents will have to be imputed, and the query be incorporated as an extra, strongly weighted
-        feature.
+        Rerank document ids by embedding similarity between query and title.
+        A personalized ranking could be implemented as well.
+            E.g. use the recommender model to score known ids. Features of new documents would have to be imputed,
+            and the query be incorporated as an additional feature.
         """
         query_embedding = self.embedding_model.encode([query])
         title_embeddings = self.embedding_model.encode(titles)
@@ -52,6 +51,9 @@ class RecommendationModel:
         return sorted_ids
 
     def score(self, document_features, user_features):
+        """
+        Return score of a document for a user. This is a pointwise model scoring each document individually.
+        """
         document_embeddings = np.array(document_features['title_embeddings'].values.tolist())
 
         query_embeddings = self.embedding_model.encode([user_features['query']])
