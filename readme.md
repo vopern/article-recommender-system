@@ -4,8 +4,6 @@ A system design study for a recommender system of arXiv articles.
 The idea is to explore the components for a complete system in combination, not to create a production-ready system
 or a polished recommender model.
 
-See the great book 'Machine Learning System Desing Interview' by Ali Aminian and Alex Xu 
-for more examples and better descriptions.  
 
 ## High Level Design
 ![image info](high_level.png)
@@ -88,5 +86,7 @@ The feature store's capabilities are not really exploited here, it could be used
 - provide historical features in training.
 - Feature updates might be pushed to the online store after each user action.
 
-  
-## Thank you to arXiv for use of its open access interoperability.
+## References
+- This setup is based on an idea from the great 'Machine Learning System Design Interview' book by Ali Aminian and Alex Xu, 
+which contains many excellent descriptions of machine learning systems.
+-  Thank you to [arXiv](https://arxiv.org/) for use of its open access interoperability.
